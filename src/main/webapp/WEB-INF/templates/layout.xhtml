@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="theme-color" content="#0f172a"/>
+    <title><ui:insert name="title">Sistema de Gestión de Estudiantes</ui:insert></title>
+
+    <h:outputStylesheet library="primefaces" name="primeicons/primeicons.css"/>
+    <h:outputStylesheet name="css/styles.css"/>
+</h:head>
+
+<h:body>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="pi pi-graduation-cap"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">EduGestión</span>
+                    <span class="brand-subtitle">Sistema de estudiantes</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Navegación principal">
+                <span class="nav-section">MENÚ PRINCIPAL</span>
+
+                <h:link outcome="/views/dashboard.xhtml"
+                        styleClass="nav-link #{view.viewId eq '/views/dashboard.xhtml' ? 'active' : ''}">
+                    <i class="pi pi-chart-pie"></i>
+                    <span>Dashboard</span>
+                </h:link>
+
+                <h:link outcome="/views/estudiantes.xhtml"
+                        styleClass="nav-link #{view.viewId eq '/views/estudiantes.xhtml' ? 'active' : ''}">
+                    <i class="pi pi-id-card"></i>
+                    <span>Estudiantes</span>
+                </h:link>
+
+                <span class="nav-section nav-section-spaced">SISTEMA</span>
+                <a class="nav-link nav-link-muted" href="#" onclick="return false;">
+                    <i class="pi pi-database"></i>
+                    <span>MariaDB · JNDI</span>
+                </a>
+                <a class="nav-link nav-link-muted" href="#" onclick="return false;">
+                    <i class="pi pi-shield"></i>
+                    <span>Jakarta EE 10</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-footer-card">
+                    <i class="pi pi-graduation-cap"></i>
+                    <div>
+                        <strong>Gestión académica</strong>
+                        <span>Versión 1.0.0</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" onclick="document.body.classList.remove('sidebar-open')"></div>
+
+        <div class="main-area">
+            <header class="topbar">
+                <button type="button" class="menu-toggle" aria-label="Abrir menú"
+                        onclick="document.body.classList.toggle('sidebar-open')">
+                    <i class="pi pi-bars"></i>
+                </button>
+
+                <div class="topbar-title">
+                    <h1><ui:insert name="pageTitle">Dashboard</ui:insert></h1>
+                    <p><ui:insert name="pageSubtitle">Resumen general del sistema</ui:insert></p>
+                </div>
+
+                <div class="topbar-user">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-data">
+                        <strong>Administrador</strong>
+                        <span>Gestión académica</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content">
+                <p:growl id="growl" showSummary="false" showDetail="true" life="5000"/>
+                <ui:insert name="content"/>
+            </main>
+
+            <footer class="app-footer">
+                <span>Sistema de Gestión de Estudiantes · Jakarta Faces + PrimeFaces + JDBC</span>
+                <span>MariaDB · Payara Server</span>
+            </footer>
+        </div>
+    </div>
+
+    <h:outputScript name="js/app.js"/>
+</h:body>
+</html>

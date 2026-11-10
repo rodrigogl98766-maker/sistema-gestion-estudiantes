@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="title">Dashboard | EduGestión</ui:define>
+    <ui:define name="pageTitle">Dashboard</ui:define>
+    <ui:define name="pageSubtitle">Resumen general del sistema de estudiantes</ui:define>
+
+    <ui:define name="content">
+        <section class="hero-banner">
+            <div class="hero-copy">
+                <span class="hero-kicker">PANEL DE CONTROL</span>
+                <h2>Gestión académica, simplificada.</h2>
+                <p>Administra la información de tus estudiantes desde un solo lugar, con datos
+                    siempre disponibles y actualizados en MariaDB.</p>
+            </div>
+            <h:link outcome="/views/estudiantes.xhtml" styleClass="btn btn-light">
+                <i class="pi pi-users"></i>
+                <span>Ver estudiantes</span>
+                <i class="pi pi-arrow-right"></i>
+            </h:link>
+        </section>
+
+        <section class="stats-grid" aria-label="Indicadores del sistema">
+            <article class="stat-card">
+                <div class="stat-icon stat-icon-blue">
+                    <i class="pi pi-users"></i>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-label">Total estudiantes</span>
+                    <strong class="stat-value">#{dashboardBean.totalEstudiantes}</strong>
+                    <span class="stat-hint">Registros en la base de datos</span>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon stat-icon-violet">
+                    <i class="pi pi-user-plus"></i>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-label">Nuevos este mes</span>
+                    <strong class="stat-value">#{dashboardBean.nuevosEsteMes}</strong>
+                    <span class="stat-hint">Altas durante el mes actual</span>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon stat-icon-amber">
+                    <i class="pi pi-clock"></i>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-label">Último registro</span>
+                    <strong class="stat-value stat-value-sm">#{dashboardBean.ultimoRegistro}</strong>
+                    <span class="stat-hint">#{dashboardBean.ultimoRegistroFecha}</span>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon stat-icon-green">
+                    <i class="pi pi-database"></i>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-label">Base de datos</span>
+                    <span class="#{dashboardBean.estadoConexionClass}">
+                        <span class="status-dot"></span>
+                        #{dashboardBean.estadoConexion}
+                    </span>
+                    <span class="stat-hint">Pool JNDI jdbc/GestionEstudiantes</span>
+                </div>
+            </article>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Últimos registros</h2>
+                    <p>Estudiantes agregados recientemente al sistema.</p>
+                </div>
+                <h:link outcome="/views/estudiantes.xhtml" styleClass="link-more">
+                    <span>Ver todos</span>
+                    <i class="pi pi-arrow-right"></i>
+                </h:link>
+            </div>
+
+            <h:form id="formDashboard">
+                <p:dataTable id="tablaRecientes"
+                             value="#{dashboardBean.estudiantesRecientes}"
+                             var="est"
+                             rowKey="#{est.id}"
+                             responsiveLayout="scroll"
+                             emptyMessage="Aún no hay estudiantes registrados."
+                             styleClass="dashboard-table">
+                    <p:column headerText="Estudiante">
+                        <div class="student-cell">
+                            <div class="avatar-sm">#{est.iniciales}</div>
+                            <div class="student-info">
+                                <strong>#{est.nombres} #{est.apellidos}</strong>
+                                <span>#{est.correo}</span>
+                            </div>
+                        </div>
+                    </p:column>
+
+                    <p:column headerText="DNI" styleClass="col-dni">
+                        <span class="badge-dni">#{est.dni}</span>
+                    </p:column>
+
+                    <p:column headerText="Teléfono">
+                        <span class="text-muted">#{est.telefono}</span>
+                    </p:column>
+
+                    <p:column headerText="Fecha de registro" sortBy="#{est.fechaRegistro}">
+                        <h:outputText value="#{est.fechaRegistro}" rendered="#{not empty est.fechaRegistro}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                        </h:outputText>
+                        <span class="text-muted" rendered="#{empty est.fechaRegistro}">—</span>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </section>
+
+        <section class="info-banner">
+            <div class="info-banner-icon">
+                <i class="pi pi-info-circle"></i>
+            </div>
+            <div>
+                <strong>Datos reales, no simulados.</strong>
+                <p>Los indicadores se consultan directamente desde MariaDB mediante el pool de conexiones
+                    configurado en Payara. Si la base de datos no está disponible, el dashboard lo indicará.</p>
+            </div>
+        </section>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/layout.xhtml">
+    <ui:define name="title">Estudiantes | EduGestión</ui:define>
+    <ui:define name="pageTitle">Gestión de estudiantes</ui:define>
+    <ui:define name="pageSubtitle">Consulta, registra, edita y elimina estudiantes</ui:define>
+
+    <ui:define name="content">
+        <section class="panel">
+            <h:form id="formPrincipal">
+                <div class="panel-header">
+                    <div>
+                        <h2>Listado de estudiantes</h2>
+                        <p>Información almacenada en MariaDB y consultada mediante JDBC.</p>
+                    </div>
+                    <p:commandButton value="Nuevo estudiante"
+                                     icon="pi pi-plus"
+                                     action="#{estudianteBean.nuevo}"
+                                     process="@this"
+                                     update=":formEstudiante"
+                                     oncomplete="PF('estudianteDialog').show();"
+                                     styleClass="btn-primary"/>
+                </div>
+
+                <div class="toolbar">
+                    <div class="search-field">
+                        <i class="pi pi-search"></i>
+                        <p:inputText id="filtro"
+                                     value="#{estudianteBean.filtro}"
+                                     placeholder="Buscar por nombres, apellidos o DNI..."
+                                     aria-label="Buscar estudiantes"
+                                     styleClass="search-input"/>
+                    </div>
+
+                    <div class="toolbar-actions">
+                        <p:commandButton id="btnBuscar"
+                                         value="Buscar"
+                                         icon="pi pi-search"
+                                         action="#{estudianteBean.buscar}"
+                                         update="tablaEstudiantes contador :growl"
+                                         styleClass="btn-secondary"/>
+                        <p:commandButton value="Limpiar"
+                                         icon="pi pi-times"
+                                         action="#{estudianteBean.limpiarFiltro}"
+                                         process="@this"
+                                         update="filtro tablaEstudiantes contador :growl"
+                                         styleClass="btn-ghost"/>
+                    </div>
+
+                    <p:outputPanel id="contador" styleClass="record-count">
+                        #{estudianteBean.textoContador}
+                    </p:outputPanel>
+
+                    <p:defaultCommand target="btnBuscar"/>
+                </div>
+
+                <p:dataTable id="tablaEstudiantes"
+                             value="#{estudianteBean.estudiantes}"
+                             var="est"
+                             rowKey="#{est.id}"
+                             paginator="true"
+                             rows="10"
+                             rowsPerPageTemplate="5,10,25"
+                             paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="Mostrando {startRecord} a {endRecord} de {totalRecords}"
+                             responsiveLayout="scroll"
+                             emptyMessage="No se encontraron estudiantes registrados."
+                             styleClass="students-table">
+
+                    <p:column headerText="Estudiante" sortBy="#{est.apellidos}" styleClass="col-estudiante">
+                        <div class="student-cell">
+                            <div class="avatar-sm">#{est.iniciales}</div>
+                            <div class="student-info">
+                                <strong>#{est.nombres} #{est.apellidos}</strong>
+                                <span>#{est.correo}</span>
+                            </div>
+                        </div>
+                    </p:column>
+
+                    <p:column headerText="DNI" sortBy="#{est.dni}" styleClass="col-dni">
+                        <span class="badge-dni">#{est.dni}</span>
+                    </p:column>
+
+                    <p:column headerText="Teléfono" sortBy="#{est.telefono}" styleClass="col-telefono">
+                        <span class="text-muted">#{est.telefono}</span>
+                    </p:column>
+
+                    <p:column headerText="Registro" sortBy="#{est.fechaRegistro}" styleClass="col-fecha">
+                        <h:outputText value="#{est.fechaRegistro}" rendered="#{not empty est.fechaRegistro}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                        </h:outputText>
+                        <span class="text-muted" rendered="#{empty est.fechaRegistro}">—</span>
+                    </p:column>
+
+                    <p:column headerText="Acciones" styleClass="actions-col" exportable="false">
+                        <div class="action-buttons">
+                            <p:commandButton icon="pi pi-pencil"
+                                             title="Editar estudiante"
+                                             aria-label="Editar estudiante"
+                                             action="#{estudianteBean.editar(est)}"
+                                             process="@this"
+                                             update=":formEstudiante"
+                                             oncomplete="PF('estudianteDialog').show();"
+                                             styleClass="btn-icon btn-edit"/>
+                            <p:commandButton icon="pi pi-trash"
+                                             title="Eliminar estudiante"
+                                             aria-label="Eliminar estudiante"
+                                             action="#{estudianteBean.eliminar(est)}"
+                                             process="@this"
+                                             update=":formPrincipal:tablaEstudiantes :formPrincipal:contador :growl"
+                                             styleClass="btn-icon btn-delete">
+                                <p:confirm header="Eliminar estudiante"
+                                           message="¿Está seguro de eliminar a #{est.nombres} #{est.apellidos}? Esta acción no se puede deshacer."
+                                           icon="pi pi-exclamation-triangle"/>
+                            </p:commandButton>
+                        </div>
+                    </p:column>
+                </p:dataTable>
+
+                <p:confirmDialog global="true" responsive="true" width="440" styleClass="confirm-dialog">
+                    <p:commandButton value="Sí, eliminar"
+                                     type="button"
+                                     icon="pi pi-trash"
+                                     styleClass="ui-confirmdialog-yes btn-danger"/>
+                    <p:commandButton value="Cancelar"
+                                     type="button"
+                                     icon="pi pi-times"
+                                     styleClass="ui-confirmdialog-no btn-ghost"/>
+                </p:confirmDialog>
+            </h:form>
+        </section>
+
+        <p:dialog widgetVar="estudianteDialog"
+                  header="Datos del estudiante"
+                  modal="true"
+                  responsive="true"
+                  width="760"
+                  resizable="false"
+                  draggable="false"
+                  closeOnEscape="true"
+                  appendTo="@(body)"
+                  styleClass="student-dialog">
+
+            <h:form id="formEstudiante">
+                <div class="dialog-intro">
+                    <span class="dialog-kicker">FORMULARIO DE ESTUDIANTE</span>
+                    <h3>#{estudianteBean.tituloDialogo}</h3>
+                    <p>Complete los datos. Los campos marcados con <span class="required">*</span> son obligatorios.</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="field">
+                        <p:outputLabel for="nombres" value="Nombres *"/>
+                        <p:inputText id="nombres"
+                                     value="#{estudianteBean.estudiante.nombres}"
+                                     required="true"
+                                     requiredMessage="Ingrese los nombres."
+                                     maxlength="100"
+                                     autocomplete="off"
+                                     styleClass="w-full"/>
+                        <p:message for="nombres"/>
+                    </div>
+
+                    <div class="field">
+                        <p:outputLabel for="apellidos" value="Apellidos *"/>
+                        <p:inputText id="apellidos"
+                                     value="#{estudianteBean.estudiante.apellidos}"
+                                     required="true"
+                                     requiredMessage="Ingrese los apellidos."
+                                     maxlength="100"
+                                     autocomplete="off"
+                                     styleClass="w-full"/>
+                        <p:message for="apellidos"/>
+                    </div>
+
+                    <div class="field">
+                        <p:outputLabel for="dni" value="DNI *"/>
+                        <p:inputText id="dni"
+                                     value="#{estudianteBean.estudiante.dni}"
+                                     required="true"
+                                     requiredMessage="Ingrese el DNI."
+                                     maxlength="8"
+                                     inputmode="numeric"
+                                     autocomplete="off"
+                                     oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                     styleClass="w-full"/>
+                        <p:message for="dni"/>
+                        <small class="field-hint">Exactamente 8 dígitos numéricos.</small>
+                    </div>
+
+                    <div class="field">
+                        <p:outputLabel for="telefono" value="Teléfono *"/>
+                        <p:inputText id="telefono"
+                                     value="#{estudianteBean.estudiante.telefono}"
+                                     required="true"
+                                     requiredMessage="Ingrese el teléfono."
+                                     maxlength="15"
+                                     inputmode="tel"
+                                     autocomplete="off"
+                                     styleClass="w-full"/>
+                        <p:message for="telefono"/>
+                        <small class="field-hint">Entre 6 y 15 caracteres: números, +, -, paréntesis o espacios.</small>
+                    </div>
+
+                    <div class="field field-full">
+                        <p:outputLabel for="correo" value="Correo electrónico *"/>
+                        <p:inputText id="correo"
+                                     value="#{estudianteBean.estudiante.correo}"
+                                     type="email"
+                                     required="true"
+                                     requiredMessage="Ingrese el correo electrónico."
+                                     maxlength="120"
+                                     autocomplete="off"
+                                     styleClass="w-full"/>
+                        <p:message for="correo"/>
+                        <small class="field-hint">Debe ser un correo válido y no puede repetirse.</small>
+                    </div>
+                </div>
+
+                <div class="dialog-footer">
+                    <p:commandButton value="Cancelar"
+                                     type="button"
+                                     icon="pi pi-times"
+                                     onclick="PF('estudianteDialog').hide();"
+                                     styleClass="btn-ghost"/>
+                    <p:commandButton value="#{estudianteBean.etiquetaGuardar}"
+                                     icon="pi pi-save"
+                                     action="#{estudianteBean.guardar}"
+                                     update=":formEstudiante :formPrincipal:tablaEstudiantes :formPrincipal:contador :growl"
+                                     styleClass="btn-primary"/>
+                </div>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
+</html>

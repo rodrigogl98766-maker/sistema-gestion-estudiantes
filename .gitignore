@@ -1,0 +1,31 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/settings.json
+.settings/
+.classpath
+.project
+
+# Payara / logs
+*.log
+logs/
+glassfish/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Variables locales y secretos
+.env
+.env.*
+secrets/

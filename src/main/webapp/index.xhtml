@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="refresh" content="0;url=#{request.contextPath}/views/dashboard.xhtml"/>
+    <title>EduGestión | Cargando</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 20% 10%, #1e3a8a, #0f172a 55%);
+            color: #e2e8f0;
+            font-family: "Segoe UI", system-ui, sans-serif;
+        }
+        .splash {
+            width: min(420px, calc(100vw - 40px));
+            padding: 34px;
+            border: 1px solid rgba(148, 163, 184, .18);
+            border-radius: 22px;
+            background: rgba(15, 23, 42, .72);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, .3);
+            text-align: center;
+            backdrop-filter: blur(14px);
+        }
+        .logo {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 18px;
+            display: grid;
+            place-items: center;
+            border-radius: 17px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #fff;
+            font-size: 25px;
+        }
+        h1 { margin: 0; font-size: 22px; letter-spacing: -.03em; }
+        p { margin: 9px 0 22px; color: #94a3b8; font-size: 13px; line-height: 1.55; }
+        a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 20px;
+            border-radius: 10px;
+            background: #2563eb;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 650;
+            text-decoration: none;
+        }
+        a:hover { background: #1d4ed8; }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="splash">
+        <div class="logo">🎓</div>
+        <h1>EduGestión</h1>
+        <p>Estamos preparando el panel de gestión de estudiantes. Si la redirección no es automática, use el siguiente enlace.</p>
+        <h:link outcome="/views/dashboard.xhtml" value="Ir al dashboard"/>
+    </div>
+</h:body>
+</html>
