@@ -6,6 +6,8 @@ Aplicación web para la gestión académica de estudiantes, desarrollada con **J
 
 > **Documentación completa:** el informe técnico con objetivos, arquitectura, desarrollo, pruebas, evidencias, problemas y soluciones está en **[DOCUMENTACION.md](DOCUMENTACION.md)**. Este README es la guía rápida de instalación y uso.
 
+> **Evidencias de Payara:** capturas de la consola, aplicación desplegada, pool JNDI y salidas de comandos en **[docs/evidencias-payara/EVIDENCIAS-PAYARA.md](docs/evidencias-payara/EVIDENCIAS-PAYARA.md)**.
+
 ---
 
 ## Características
@@ -116,6 +118,9 @@ sistema-gestion-estudiantes/
 │           └── index.xhtml
 ├── database.sql
 ├── DOCUMENTACION.md
+├── docs/
+│   └── evidencias-payara/
+│       └── EVIDENCIAS-PAYARA.md
 ├── mvnw
 ├── mvnw.cmd
 ├── pom.xml

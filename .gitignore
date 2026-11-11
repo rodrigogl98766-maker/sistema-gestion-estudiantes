@@ -29,3 +29,6 @@ desktop.ini
 .env
 .env.*
 secrets/
+
+# Evidencias locales (pueden contener datos personales)
+evidencias/
